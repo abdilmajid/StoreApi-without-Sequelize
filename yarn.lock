@@ -1080,6 +1080,11 @@ make-dir@^1.0.0:
   dependencies:
     pify "^3.0.0"
 
+manakin@0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/manakin/-/manakin-0.5.2.tgz#abe3df430ca6085f6983f6e4cf5af0298f4d30cc"
+  integrity sha512-pfDSB7QYoVg0Io4KMV9hhPoXpj6p0uBscgtyUSKCOFZe8bqgbpStfgnKIbF/ulnr6U3ICu4OqdyxAqBgOhZwBQ==
+
 map-cache@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/map-cache/-/map-cache-0.2.2.tgz#c32abd0bd6525d9b051645bb4f26ac5dc98a0dbf"
@@ -1461,10 +1466,25 @@ pg-connection-string@0.1.3:
   resolved "https://registry.yarnpkg.com/pg-connection-string/-/pg-connection-string-0.1.3.tgz#da1847b20940e42ee1492beaf65d49d91b245df7"
   integrity sha1-2hhHsglA5C7hSSvq9l1J2RskXfc=
 
+pg-minify@0.5.5:
+  version "0.5.5"
+  resolved "https://registry.yarnpkg.com/pg-minify/-/pg-minify-0.5.5.tgz#6c961a61aa19f469d8edfe5a3c0da58760f3c339"
+  integrity sha512-7Pf9h6nV1RFqED1hkRosePqvpPwNUUtW06TT4+lHwzesxa5gffxkShTjYH6JXV5sSSfh5+2yHOTTWEkCyCQ0Eg==
+
 pg-pool@^2.0.4:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/pg-pool/-/pg-pool-2.0.5.tgz#f00556fab23f1bbb14b0650ba8d0e447434a1b04"
   integrity sha512-T4W9qzP2LjItXuXbW6jgAF2AY0jHp6IoTxRhM3GB7yzfBxzDnA3GCm0sAduzmmiCybMqD0+V1HiqIG5X2YWqlQ==
+
+pg-promise@^8.5.4:
+  version "8.5.4"
+  resolved "https://registry.yarnpkg.com/pg-promise/-/pg-promise-8.5.4.tgz#3c1c656d340b1d8e21bbd8017a650c795b375aca"
+  integrity sha512-GjGEL5WuRJOjTdTiI/v8x4SUd+nLh/fnAgKa8GvMi6xNKLaxvXOC6PiVj53n/oppUN6QjewGh06RBod4VrXhGQ==
+  dependencies:
+    manakin "0.5.2"
+    pg "7.7.1"
+    pg-minify "0.5.5"
+    spex "2.1.0"
 
 pg-types@~1.12.1:
   version "1.12.1"
@@ -1476,7 +1496,7 @@ pg-types@~1.12.1:
     postgres-date "~1.0.0"
     postgres-interval "^1.1.0"
 
-pg@^7.7.1:
+pg@7.7.1, pg@^7.7.1:
   version "7.7.1"
   resolved "https://registry.yarnpkg.com/pg/-/pg-7.7.1.tgz#546b192ff484322b69689391f885de3ba91a30d4"
   integrity sha512-p3I0mXOmUvCoVlCMFW6iYSrnguPol6q8He15NGgSIdM3sPGjFc+8JGCeKclw8ZR4ETd+Jxy2KNiaPUcocHZeMw==
@@ -1828,6 +1848,11 @@ source-map@^0.5.6:
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
   integrity sha1-igOdLRAh0i0eoUyA2OpGi6LvP8w=
+
+spex@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/spex/-/spex-2.1.0.tgz#21939ab7722322c3a1d002870fab022daa79335f"
+  integrity sha512-nZ1LA8v1o0Maf9pdWKUXuUM855EqyE+DP0NT0ddZqXqXmr9xKlXjYWN97w+yWehTbM+Ox0aEvQ8Ufqk/OuLCOQ==
 
 split-string@^3.0.1, split-string@^3.0.2:
   version "3.1.0"
