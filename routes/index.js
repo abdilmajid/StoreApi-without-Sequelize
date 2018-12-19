@@ -90,29 +90,26 @@ router.post('/orders', async(req, res) => {
       })
       .catch(err => res.status(400).json('Something Went Wrong'))
   })
-  
-  // (async () => {
-  //   const client = await pool.connect()
-  //   try {
-  //     await client.query('BEGIN')
-  //     const { rows } = await client.query(sql3)
-  //     await client.query('COMMIT')
-  //   } catch(err) {
-  //     await client.query('ROLLBACK')
-  //     throw err
-  //   } finally {
-  //     // res.send(rows)
-  //     console.log(rows)
-  //     client.release()
-  //   }
-  // })().catch(err => console.error(err.stack))
 })
 
 
 
-router.get('/order/:id', (req, res) => {
+router.get('/orders/:id', (req, res) => {
   const { id } = req.params
-  console.log(req.params.id)
+  // const sql3 = `SELECT json_agg(t) FROM (SELECT json_build_object('id', o.id, 'name', o.name, 'email', o.email,'order_items', json_build_object( 'id', oi.id,'order_id', oi.order_id,'product_id', oi.product_id,'qty', oi.qty,'product', json_build_object('id', p.id, 'name', p.name,'image', p.image,'description', p.description,'price', p.price))) FROM order_items oi INNER JOIN orders o ON oi.order_id = o.id INNER JOIN products p ON oi.product_id = p.id WHERE o.id = ${id}) t;`
+  // const sql3 = `SELECT orders.id, orders.name, orders.email, order_items.qty, products.price, products.image FROM order_items INNER JOIN orders ON order_items.order_id = orders.id INNER JOIN products ON order_items.product_id = products.id WHERE orders.id = ${id} ORDER BY orders.id`
+  const sql3 = `SELECT row_to_json(ord) AS orders FROM( SELECT o.id, o.name, o.email, (SELECT json_agg(orderItems)
+  FROM( SELECT * FROM order_items WHERE order_id = o.id ) orderItems ) AS order_items FROM orders as o WHERE o.id = ${id}) ord;`
+  pool.connect()
+    .then(() => {
+      return pool.query(sql3)
+    })
+    .then(data => {
+      console.log(data.rows[0])
+      res.send(data.rows[0].orders)
+      // res.send(data.rows[0].json_build_object)
+    })
+    .catch(err => res.status(400).json('Something Went Wrong'))
 })
 
 

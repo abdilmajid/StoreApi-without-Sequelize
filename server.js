@@ -32,7 +32,7 @@ const pool = new pg.Pool(config);
 app.use(express.static('./public'));
 // Extended true ->is a nested  
 // Extended False ->not nested object
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
 
