@@ -1,7 +1,7 @@
-const express = require('express');
-const pg = require('pg');
+const express = require('express')
+const pg = require('pg')
 const { Pool, Client} = require('pg')
-
+const prod = require('./products')
 
 
 //Connect Express Server to Postgress
@@ -47,8 +47,8 @@ router.get('/products', (req, res) => {
 
 router.post('/orders', async(req, res) => {
   const {name, email, order_items} = req.body.orders;
-  const sql1 = 'INSERT INTO orders(name, email) VALUES ($1, $2) RETURNING id'
-  const sql2 = 'INSERT INTO order_items(order_id, product_id, qty) VALUES ($1, $2, $3)'
+  const sql1 = `INSERT INTO orders(name, email) VALUES ($1, $2) RETURNING id`
+  const sql2 = `INSERT INTO order_items(order_id, product_id, qty, products) VALUES ($1, $2, $3, $4)`
   const sql3 = 'SELECT orders.id, orders.name, orders.email, order_items.qty, products.price, products.image FROM order_items INNER JOIN orders ON order_items.order_id = orders.id INNER JOIN products ON order_items.product_id = products.id ORDER BY orders.id'
   
   pool.connect((err, client, done) => {
@@ -71,8 +71,26 @@ router.post('/orders', async(req, res) => {
         if(shouldAbort(err)) return
 
         const id = res.rows[0].id
+
         order_items.forEach(data => {
-          return client.query(sql2, [id, data.product_id, data.qty], (err, res) => {
+          switch(data.product_id){
+            case 1:
+              products = prod.product1;
+              break;
+            case 2:
+              products = prod.product2;
+              break;
+            case 3:
+              products = prod.product3;
+              break;
+            case 4:
+              products = prod.product4;
+              break;
+            case 5:
+              products = prod.product5;
+              break;
+          }
+          return client.query(sql2, [id, data.product_id, data.qty, products], (err, res) => {
             if(shouldAbort(err)) return
             client.query('COMMIT', (err) => {
               if(err) {
@@ -96,21 +114,37 @@ router.post('/orders', async(req, res) => {
 
 router.get('/orders/:id', (req, res) => {
   const { id } = req.params
+ 
   // const sql3 = `SELECT json_agg(t) FROM (SELECT json_build_object('id', o.id, 'name', o.name, 'email', o.email,'order_items', json_build_object( 'id', oi.id,'order_id', oi.order_id,'product_id', oi.product_id,'qty', oi.qty,'product', json_build_object('id', p.id, 'name', p.name,'image', p.image,'description', p.description,'price', p.price))) FROM order_items oi INNER JOIN orders o ON oi.order_id = o.id INNER JOIN products p ON oi.product_id = p.id WHERE o.id = ${id}) t;`
+ 
   // const sql3 = `SELECT orders.id, orders.name, orders.email, order_items.qty, products.price, products.image FROM order_items INNER JOIN orders ON order_items.order_id = orders.id INNER JOIN products ON order_items.product_id = products.id WHERE orders.id = ${id} ORDER BY orders.id`
-  const sql3 = `SELECT row_to_json(ord) AS orders FROM( SELECT o.id, o.name, o.email, (SELECT json_agg(orderItems)
-  FROM( SELECT * FROM order_items WHERE order_id = o.id ) orderItems ) AS order_items FROM orders as o WHERE o.id = ${id}) ord;`
+  
+  // const sql3 = `SELECT row_to_json(ord) AS orders FROM( SELECT o.id, o.name, o.email, (SELECT json_agg(orderItems)
+  // FROM( SELECT * FROM order_items WHERE order_id = o.id ) orderItems ) AS order_items FROM orders as o WHERE o.id = ${id}) ord;`
+ 
+  const sql3 = `SELECT row_to_json(t) FROM ( SELECT id, name, email, ( SELECT json_agg(row_to_json(order_items)) FROM order_items WHERE order_id=orders.id ) AS order_items FROM orders WHERE id = ${id}) t;`
+
+  // const sql3 = `
+  //     SELECT row_to_json(t) 
+  //     FROM (
+  //       SELECT * FROM products 
+  //       WHERE id = ${id}
+  //     )t
+  //     ;`
+
+
   pool.connect()
     .then(() => {
       return pool.query(sql3)
     })
     .then(data => {
-      console.log(data.rows[0])
-      res.send(data.rows[0].orders)
+      console.log(data.rows)
+      res.send(data.rows[0].row_to_json)
       // res.send(data.rows[0].json_build_object)
     })
     .catch(err => res.status(400).json('Something Went Wrong'))
 })
+
 
 
 module.exports = router;
