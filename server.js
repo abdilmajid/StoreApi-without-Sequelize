@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors')
-const morgan = require('morgan');
+// const morgan = require('morgan');
 const pg = require('pg');
 
 
@@ -10,10 +10,10 @@ const app = express()
 
 
 //Allows you to set eviroment variable
-require('dotenv').config()
+// require('dotenv').config()
 
 // Morgan logs server requests in the terminal
-app.use(morgan('short'))
+// app.use(morgan('short'))
 
 
 //Connect Express Server to Postgress
@@ -21,12 +21,6 @@ app.use(morgan('short'))
 const config = {
   connectionString: process.env.DATABASE_URL,
   ssl: true,
-  // host: 'localhost',
-  // port: 5432,
-  // database: 'json2',
-  // user: 'postgres',
-  // password: 123456,
-  // max: 1000
 }
 // Query postgress using pool
 const pool = new pg.Pool(config);
@@ -48,6 +42,6 @@ app.use(router)
 
 
 
-app.listen(process.env.PORT || 6002, () => {
-  console.log(`App Running on port ${process.env.PORT}`)
-});
+app.listen(process.env.PORT || 3000, ()=> {
+  console.log(`app is running on port ${process.env.PORT}`);
+})
