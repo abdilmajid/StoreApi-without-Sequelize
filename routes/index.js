@@ -142,7 +142,7 @@ router.post('/orders', (req, res) => {
       res.send(data.rows[0])
     })
     .catch(err => res.status(400).json('Something Went Wrong'))
-  }, 1000)
+  }, 2000)
 })
 
 
