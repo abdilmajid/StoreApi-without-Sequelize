@@ -19,10 +19,8 @@ app.use(morgan('short'))
 //Connect Express Server to Postgress
 // *JUST CHANGE DATABASE everything else same
 const config = {
-  user: 'postgres',
-  database: 'jsondata',
-  password: 123456,
-  port: 5432,
+  connectionString: process.env.DATABASE_URL,
+  ssl: true,
 }
 // Query postgress using pool
 const pool = new pg.Pool(config);
@@ -41,9 +39,9 @@ const router = require('./routes')
 app.use(router)
 
 
-const port = process.env.PORT || 6003
 
 
-app.listen(port, () => {
+
+app.listen(process.env.PORT || 3000, () => {
   console.log(`App Running on port ${process.env.PORT}`)
 });

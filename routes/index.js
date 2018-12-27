@@ -5,12 +5,8 @@ const prod = require('./products')
 
 
 const config = {
-  host: 'localhost',
-  port: 5432,
-  database: 'json2',
-  user: 'postgres',
-  password: 123456,
-  max: 1000
+  connectionString: process.env.DATABASE_URL,
+  ssl: true,
 }
 
 const pool = new Pool(config);
