@@ -1,4 +1,3 @@
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors')
@@ -21,7 +20,7 @@ app.use(morgan('short'))
 // *JUST CHANGE DATABASE everything else same
 const config = {
   user: 'postgres',
-  database: 'test2',
+  database: 'jsondata',
   password: 123456,
   port: 5432,
 }

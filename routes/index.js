@@ -77,6 +77,51 @@ router.post('/orders', (req, res) => {
             case 5:
               products = prod.product5;
               break;
+            case 6:
+              products = prod.product6;
+              break;
+            case 7:
+              products = prod.product7;
+              break;
+            case 8:
+              products = prod.product8;
+              break;
+            case 9:
+              products = prod.product9;
+              break;
+            case 10:
+              products = prod.product10;
+              break; 
+            case 11:
+              products = prod.product11;
+              break;
+            case 12:
+              products = prod.product12;
+              break;
+            case 13:
+              products = prod.product13;
+              break;
+            case 14:
+              products = prod.product14;
+              break;
+            case 15:
+              products = prod.product15;
+              break;
+            case 16:
+              products = prod.product16;
+              break;
+            case 17:
+              products = prod.product17;
+              break;
+            case 18:
+              products = prod.product18;
+              break;
+            case 19:
+              products = prod.product19;
+              break;
+            case 20:
+              products = prod.product20;
+              break;   
           }
           return client.query(sql2, [id, data.product_id, data.qty, products], (err, res) => {
             if(shouldAbort(err)) return
@@ -91,7 +136,8 @@ router.post('/orders', (req, res) => {
       })
     })
   })
-  pool.connect()
+  setTimeout(() => {
+    pool.connect()
     .then(() => {
       const sql4 = 'SELECT * FROM orders ORDER BY ID DESC LIMIT 1;'
       return pool.query(sql4)
@@ -100,6 +146,7 @@ router.post('/orders', (req, res) => {
       res.send(data.rows[0])
     })
     .catch(err => res.status(400).json('Something Went Wrong'))
+  }, 1000)
 })
 
 
