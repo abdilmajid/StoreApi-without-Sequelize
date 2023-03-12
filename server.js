@@ -1,8 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors')
-// const morgan = require('morgan');
 const pg = require('pg');
+const dotenv = require('dotenv');
+dotenv.config()
 
 
 const app = express()
@@ -19,8 +20,13 @@ const app = express()
 //Connect Express Server to Postgress
 // *JUST CHANGE DATABASE everything else same
 const config = {
-  connectionString: process.env.DATABASE_URL,
-  ssl: true,
+  // connectionString: process.env.DATABASE_URL,
+  // ssl: true,
+  host: 'localhost',
+  port: 5432,
+  database: 'json2',
+  user: 'abdil',
+  password: 123456,
 }
 // Query postgress using pool
 const pool = new pg.Pool(config);

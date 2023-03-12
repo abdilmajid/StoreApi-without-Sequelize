@@ -10,9 +10,8 @@ const config = {
   host: 'localhost',
   port: 5432,
   database: 'json2',
-  user: 'postgres',
+  user: 'abdil',
   password: 123456,
-  max: 1000
 }
 
 const pool = new Pool(config);
