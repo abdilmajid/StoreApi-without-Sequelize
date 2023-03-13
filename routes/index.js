@@ -1,6 +1,6 @@
 const express = require('express')
 const pg = require('pg')
-const { Pool, Client} = require('pg')
+const { Pool } = require('pg')
 const prod = require('./products')
 
 
@@ -9,18 +9,14 @@ const config = {
   // ssl: true,
   host: 'localhost',
   port: 5432,
-  database: 'json2',
+  database: 'store_app1',
   user: 'abdil',
-  password: 123456,
+  password: '',
 }
 
 const pool = new Pool(config);
-const client = new Client(config);
-
-
 //creates routes for different requests
 const router = express.Router()
-
 
 
 router.get('/products', (req, res) => {
@@ -35,7 +31,7 @@ router.get('/products', (req, res) => {
 })
 
 
-router.post('/orders', (req, res) => {
+router.post('/orders', async (req, res) => {
   const {name, email, order_items} = req.body.orders;
   const sql1 = `INSERT INTO orders(name, email) VALUES ($1, $2) RETURNING id`
   const sql2 = `INSERT INTO order_items(order_id, product_id, qty, products) VALUES ($1, $2, $3, $4)`
@@ -43,7 +39,7 @@ router.post('/orders', (req, res) => {
   pool.connect((err, client, done) => {
     const shouldAbort = (err) => {
       if(err) {
-        console.error('Error in transaction', err.stack)
+        console.error('Error in transaction L47', err.stack)
         client.query('ROOLBACK', (err) => {
           if(err) {
             console.error('Error rolling back client', err.stack)
@@ -53,14 +49,11 @@ router.post('/orders', (req, res) => {
       }
       return !!err
     }
-
     client.query('BEGIN', (err) => {
       if(shouldAbort(err)) return
       client.query(sql1, [name, email], (err, res) => {
         if(shouldAbort(err)) return
-
         const id = res.rows[0].id
-
         order_items.forEach(data => {
           switch(data.product_id){
             case 1:
@@ -127,32 +120,30 @@ router.post('/orders', (req, res) => {
           return client.query(sql2, [id, data.product_id, data.qty, products], (err, res) => {
             if(shouldAbort(err)) return
             client.query('COMMIT', (err) => {
-              if(err) {
-                console.error('Error committing transaction', err.stack)
-              }
-              done()
+              if(err) console.error('Error committing transaction', err.stack)             
             })
           })
         })
       })
+      done()
     })
   })
-  setTimeout(() => {
-    pool.connect()
-    .then(() => {
-      const sql4 = 'SELECT * FROM orders ORDER BY ID DESC LIMIT 1;'
-      return pool.query(sql4)
-    })
-    .then(data => {
-      res.send(data.rows[0])
-    })
-    .catch(err => res.status(400).json('Something Went Wrong'))
-  }, 2000)
+
+  await pool.connect()
+  .then(() => {
+    const sql4 = 'SELECT * FROM orders ORDER BY ID DESC LIMIT 1;'
+    return pool.query(sql4)
+  })
+  .then(data => {
+    res.send(data.rows[0])
+  })
+  .catch(err => res.status(400).json('Something Went Wrong'))
 })
 
 
 router.get('/orders/:id', (req, res) => {
   const { id } = req.params
+  console.log('GET - id: L178', id)
   const sql3 = `SELECT row_to_json(t) FROM ( SELECT id, name, email, ( SELECT json_agg(row_to_json(order_items)) FROM order_items WHERE order_id=orders.id ) AS order_items FROM orders WHERE id = ${id}) t;`
 
   pool.connect()
