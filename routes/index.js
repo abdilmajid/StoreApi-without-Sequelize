@@ -39,7 +39,7 @@ router.post('/orders', async (req, res) => {
   pool.connect((err, client, done) => {
     const shouldAbort = (err) => {
       if(err) {
-        console.error('Error in transaction L47', err.stack)
+        console.error('Error in transaction', err.stack)
         client.query('ROOLBACK', (err) => {
           if(err) {
             console.error('Error rolling back client', err.stack)
@@ -143,9 +143,7 @@ router.post('/orders', async (req, res) => {
 
 router.get('/orders/:id', (req, res) => {
   const { id } = req.params
-  console.log('GET - id: L178', id)
   const sql3 = `SELECT row_to_json(t) FROM ( SELECT id, name, email, ( SELECT json_agg(row_to_json(order_items)) FROM order_items WHERE order_id=orders.id ) AS order_items FROM orders WHERE id = ${id}) t;`
-
   pool.connect()
     .then(() => {
       return pool.query(sql3)
