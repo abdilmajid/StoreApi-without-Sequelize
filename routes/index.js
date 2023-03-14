@@ -7,12 +7,19 @@ const prod = require('./products')
 const config = {
   // connectionString: process.env.DATABASE_URL,
   // ssl: true,
-  host: 'localhost',
+  // host: process.env.DATABASE_URL,
+  // port: process.env.DATABASE_PORT,
+  // database: process.env.DATABASE,
+  // user: process.env.DATABASE_USER,
+  // password: process.env.DATABASE_PASSWORD,
+  host: '127.0.0.1',
   port: 5432,
-  database: 'store_app1',
-  user: 'abdil',
+  database: "store_app1",
+  user: "abdil",
   password: '',
 }
+
+
 
 const pool = new Pool(config);
 //creates routes for different requests
