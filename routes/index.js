@@ -7,16 +7,16 @@ const prod = require('./products')
 const config = {
   // connectionString: process.env.DATABASE_URL,
   // ssl: true,
-  // host: process.env.DATABASE_URL,
-  // port: process.env.DATABASE_PORT,
-  // database: process.env.DATABASE,
-  // user: process.env.DATABASE_USER,
-  // password: process.env.DATABASE_PASSWORD,
-  host: '127.0.0.1',
-  port: 5432,
-  database: "store_app1",
-  user: "abdil",
-  password: '',
+  host: process.env.DATABASE_URL,
+  port: process.env.DATABASE_PORT,
+  database: process.env.DATABASE,
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  // host: '127.0.0.1',
+  // port: 5432,
+  // database: "store_app1",
+  // user: "abdil",
+  // password: '',
 }
 
 
@@ -125,6 +125,7 @@ router.post('/orders', async (req, res) => {
               break;   
           }
           return client.query(sql2, [id, data.product_id, data.qty, products], (err, res) => {
+            // console.log('L128',id)
             if(shouldAbort(err)) return
             client.query('COMMIT', (err) => {
               if(err) console.error('Error committing transaction', err.stack)             
@@ -136,22 +137,24 @@ router.post('/orders', async (req, res) => {
     })
   })
 
-  await pool.connect()
-  .then(() => {
-    const sql4 = 'SELECT * FROM orders ORDER BY ID DESC LIMIT 1;'
-    return pool.query(sql4)
-  })
-  .then(data => {
-    res.send(data.rows[0])
-  })
-  .catch(err => res.status(400).json('Something Went Wrong'))
+  setTimeout(()=>{
+  pool.connect()
+   .then(() => {
+     const sql4 = 'SELECT * FROM orders ORDER BY ID DESC LIMIT 1;'
+     return pool.query(sql4)
+   })
+   .then(data => {
+     res.send(data.rows[0])
+   })
+   .catch(err => res.status(400).json('Something Went Wrong'))
+  },"1000")
 })
 
 
-router.get('/orders/:id', (req, res) => {
+router.get('/orders/:id', async(req, res) => {
   const { id } = req.params
   const sql3 = `SELECT row_to_json(t) FROM ( SELECT id, name, email, ( SELECT json_agg(row_to_json(order_items)) FROM order_items WHERE order_id=orders.id ) AS order_items FROM orders WHERE id = ${id}) t;`
-  pool.connect()
+  await pool.connect()
     .then(() => {
       return pool.query(sql3)
     })
